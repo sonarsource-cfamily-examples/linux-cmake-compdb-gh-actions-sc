@@ -10,7 +10,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      SONAR_SCANNER_VERSION: 4.6.1.2450 # Find the latest version in the "MacOS" link on this page:
+      SONAR_SCANNER_VERSION: 4.6.1.2450 # Find the latest version in the "Linux" link on this page:
                                         # https://sonarcloud.io/documentation/analysis/scan/sonarscanner/
       SONAR_SERVER_URL: "https://sonarcloud.io"
     steps:
@@ -29,12 +29,12 @@ jobs:
           restore-keys: ${{ runner.os }}-sonar
       - name: Download and set up sonar-scanner
         env:
-          SONAR_SCANNER_DOWNLOAD_URL: https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ env.SONAR_SCANNER_VERSION }}-macosx.zip
+          SONAR_SCANNER_DOWNLOAD_URL: https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${{ env.SONAR_SCANNER_VERSION }}-linux.zip
         run: |
           mkdir -p $HOME/.sonar
           curl -sSLo $HOME/.sonar/sonar-scanner.zip ${{ env.SONAR_SCANNER_DOWNLOAD_URL }} 
           unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
-          echo "$HOME/.sonar/sonar-scanner-${{ env.SONAR_SCANNER_VERSION }}-macosx/bin" >> $GITHUB_PATH
+          echo "$HOME/.sonar/sonar-scanner-${{ env.SONAR_SCANNER_VERSION }}-linux/bin" >> $GITHUB_PATH
       - name: Generate compilation database
         run: |
           mkdir build
