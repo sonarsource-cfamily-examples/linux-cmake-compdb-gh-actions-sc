@@ -1,4 +1,4 @@
-= C++ example project scanned on SonarCloud using compilation database
+= C++ example project scanned on SonarCloud using compilation database (compile_commands.json)
 // URIs:
 :uri-qg-status: https://sonarcloud.io/dashboard?id=sonarsource-cfamily-examples_linux-cmake-compdb-gh-actions-sc
 :img-qg-status: https://sonarcloud.io/api/project_badges/measure?project=sonarsource-cfamily-examples_linux-cmake-compdb-gh-actions-sc&metric=alert_status
