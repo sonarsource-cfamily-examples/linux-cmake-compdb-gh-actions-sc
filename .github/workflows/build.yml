@@ -18,7 +18,7 @@ jobs:
       - name: Generate compilation database
         run: |
           mkdir build
-          cmake -S . -B build
+          cmake -S . -B build -G Ninja
       - name: Run sonar-scanner
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
