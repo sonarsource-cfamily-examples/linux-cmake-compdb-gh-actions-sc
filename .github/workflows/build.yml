@@ -25,13 +25,14 @@ jobs:
         run: |
           sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" ${{env.CLANG_VERSION}}
           sudo apt install -y clang-tools-${{env.CLANG_VERSION}} libc++-${{env.CLANG_VERSION}}-dev
-      - name: Generate compilation database
+      - name: Generate compilation database and build
         run: |
           mkdir build
           cmake -S . -B build -G Ninja \
           -DCMAKE_CXX_COMPILER=clang++-${{env.CLANG_VERSION}} \
-          -DCMAKE_C_COMPILER=clang-${{env.CLANG_VERSION}} \
           -DCMAKE_CXX_COMPILER_CLANG_SCAN_DEPS=clang-scan-deps-${{env.CLANG_VERSION}}
+          # The project needs to be built so the `.modmap` files are generated 
+          cmake --build build --target all
       - name: Run sonar-scanner
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
