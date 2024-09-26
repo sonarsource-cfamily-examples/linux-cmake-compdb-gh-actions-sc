@@ -5,6 +5,8 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+env:
+  CLANG_VERSION: 18
 jobs:
   build:
     name: Build
@@ -19,10 +21,17 @@ jobs:
         run: |
           wget https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-linux.zip
           sudo unzip ninja-linux.zip -d /usr/local/bin
+      - name: Install clang
+        run: |
+          sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" ${{env.CLANG_VERSION}}
+          sudo apt install -y clang-tools-${{env.CLANG_VERSION}} libc++-${{env.CLANG_VERSION}}-dev
       - name: Generate compilation database
         run: |
           mkdir build
-          cmake -S . -B build -G Ninja
+          cmake -S . -B build -G Ninja \
+          -DCMAKE_CXX_COMPILER=clang++-${{env.CLANG_VERSION}} \
+          -DCMAKE_C_COMPILER=clang-${{env.CLANG_VERSION}} \
+          -DCMAKE_CXX_COMPILER_CLANG_SCAN_DEPS=clang-scan-deps-${{env.CLANG_VERSION}}
       - name: Run sonar-scanner
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
