@@ -5,6 +5,8 @@ on:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
+env:
+  CLANG_VERSION: 18
 jobs:
   build:
     name: Build
@@ -15,10 +17,22 @@ jobs:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Install sonar-scanner
         uses: sonarsource/sonarcloud-github-c-cpp@v3
-      - name: Generate compilation database
+      - name: Install Ninja
+        run: |
+          wget https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-linux.zip
+          sudo unzip ninja-linux.zip -d /usr/local/bin
+      - name: Install clang
+        run: |
+          sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" ${{env.CLANG_VERSION}}
+          sudo apt install -y clang-tools-${{env.CLANG_VERSION}} libc++-${{env.CLANG_VERSION}}-dev
+      - name: Generate compilation database and build
         run: |
           mkdir build
-          cmake -S . -B build
+          cmake -S . -B build -G Ninja \
+          -DCMAKE_CXX_COMPILER=clang++-${{env.CLANG_VERSION}} \
+          -DCMAKE_CXX_COMPILER_CLANG_SCAN_DEPS=clang-scan-deps-${{env.CLANG_VERSION}}
+          # The project needs to be built so the `.modmap` files are generated 
+          cmake --build build --target all
       - name: Run sonar-scanner
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
