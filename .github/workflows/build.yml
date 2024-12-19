@@ -37,6 +37,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }} # Put the name of your token here
         with:
+          # Set the property "sonar.cfamily.compile-commands" to the compilation database file
           args: >
-            # Set the property "sonar.cfamily.compile-commands" to the compilation database file
             --define sonar.cfamily.compile-commands=build/compile_commands.json
