@@ -15,8 +15,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
-      - name: Install sonar-scanner
-        uses: sonarsource/sonarcloud-github-c-cpp@v3
       - name: Install Ninja
         run: |
           wget https://github.com/ninja-build/ninja/releases/download/v1.12.1/ninja-linux.zip
@@ -33,10 +31,12 @@ jobs:
           -DCMAKE_CXX_COMPILER_CLANG_SCAN_DEPS=clang-scan-deps-${{env.CLANG_VERSION}}
           # The project needs to be built so the `.modmap` files are generated 
           cmake --build build --target all
-      - name: Run sonar-scanner
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }} # Put the name of your token here
-        run: |
+        with:
           # Set the property "sonar.cfamily.compile-commands" to the compilation database file
-          sonar-scanner --define sonar.cfamily.compile-commands=build/compile_commands.json
+          args: >
+            --define sonar.cfamily.compile-commands=build/compile_commands.json
