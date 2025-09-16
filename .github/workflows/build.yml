@@ -25,10 +25,10 @@ jobs:
           cmake -S . -B build -G Ninja \
           -DCMAKE_CXX_COMPILER=clang++-${{env.CLANG_VERSION}} \
           -DCMAKE_CXX_COMPILER_CLANG_SCAN_DEPS=clang-scan-deps-${{env.CLANG_VERSION}}
-          # The project needs to be built so the `.modmap` files are generated 
+          # The project needs to be built so the `.modmap` files are generated
           cmake --build build --target all
       - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v4
+        uses: SonarSource/sonarqube-scan-action@9e3b4566ddf746ecad637e9e760676f10e8229d6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }} # Put the name of your token here
